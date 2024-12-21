@@ -31,7 +31,7 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
 		return
 	} else if r.Method == "GET" {
-		row, err := chat.FindOneByID([]string{}, 1)
+		row, err := chat.FindOneByID([]string{}, 3)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -73,8 +73,8 @@ func (c *Chat) FindOneByID(fields []string, chatId int) (Chat, error) {
 
 	var chat Chat
 
-	for result.Next() {
-		err := result.Scan(&chat.ID, &chat.Name, &chat.Created, &chat.Closed, &chat.IsClosed)
+	if result.Next() {
+		err = result.Scan(&chat.ID, &chat.Name, &chat.Created, &chat.Closed, &chat.IsClosed)
 
 		if err != nil {
 			return Chat{}, err
