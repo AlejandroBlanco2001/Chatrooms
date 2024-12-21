@@ -30,6 +30,16 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 
 		w.WriteHeader(http.StatusCreated)
 		return
+	} else if r.Method == "GET" {
+		row, err := chat.FindOneByID([]string{}, 1)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		fmt.Fprintf(w, "Chat ID: %d, Name: %s, Created: %s, Closed: %s, IsClosed: %t",
+			row.ID, row.Name, row.Created, row.Closed, row.IsClosed)
 	}
 }
 

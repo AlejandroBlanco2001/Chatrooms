@@ -25,6 +25,8 @@ func GetConnection() *sql.DB {
 func createTables() {
 	db := GetConnection()
 
+	// Probably I want to make an ORM abstraccion here to be able to pull the SQL directly from the struct
+	// maybe having an array of structs with the fields and types and then generate the SQL from that
 	query := `
 	CREATE TABLE IF NOT EXISTS users (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
