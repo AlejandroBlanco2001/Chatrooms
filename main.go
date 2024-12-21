@@ -1,6 +1,7 @@
 package main
 
 import (
+	models "alejandroblanco2001/chatroom/models"
 	"fmt"
 	"net/http"
 	"time"
@@ -13,7 +14,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 func ChatHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Chat")
 
-	var chat Chat
+	var chat models.Chat
 
 	if r.Method == "POST" {
 		chat.Name = "Chat de Isaac"
