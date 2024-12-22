@@ -1,38 +1,49 @@
 package handlers
 
 import (
-	"alejandroblanco2001/chatroom/models"
-	"fmt"
+	models "alejandroblanco2001/chatroom/models"
+	"encoding/json"
 	"net/http"
-	"time"
 )
 
 func ChatHandler(w http.ResponseWriter, r *http.Request) {
-	var chat models.Chat
-
-	if r.Method == "POST" {
-		chat.Name = "Chat de Isaac"
-		chat.Created = time.Now()
-		chat.IsClosed = false
-
-		err := chat.Create()
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+	if r.Method == http.MethodGet {
+		if r.URL.Query().Get("id") != "" {
+			SearchSpecificChatHandler(w, r)
+		} else {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
+	}
+}
 
-		w.WriteHeader(http.StatusCreated)
+func SearchSpecificChatHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
-	} else if r.Method == "GET" {
-		row, err := chat.FindOneByID([]string{}, 3)
+	}
 
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	// IMPORTANT: I will not use the route /chat/:id because net/http does not support it
+	// I will use the query parameter instead
+	id := r.URL.Query().Get("id")
 
-		fmt.Fprintf(w, "Chat ID: %d, Name: %s, Created: %s, Closed: %s, IsClosed: %t",
-			row.ID, row.Name, row.Created, row.Closed, row.IsClosed)
+	chat, err := models.FindOneChatByID([]string{"id", "name", "created", "closed", "is_closed"}, id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if chat.ID == 0 {
+		http.Error(w, "Chat not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	// send a JSOn with the chat
+
+	if err := json.NewEncoder(w).Encode(chat); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
