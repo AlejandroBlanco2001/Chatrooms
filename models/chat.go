@@ -44,7 +44,7 @@ func (c *Chat) Create() error {
 	return nil
 }
 
-func (c *Chat) FindOneByID(fields []string, chatId int) (Chat, error) {
+func FindOneChatByID(fields []string, chatId string) (Chat, error) {
 	if len(fields) == 0 {
 		fields = []string{"id", "name", "created", "closed", "is_closed"}
 	}
