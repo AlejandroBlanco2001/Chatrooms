@@ -26,6 +26,7 @@ func SearchSpecificChatHandler(w http.ResponseWriter, r *http.Request) {
 	// I will use the query parameter instead
 	id := r.URL.Query().Get("id")
 
+	// I need to make this with Dependency Injection, but I will do it later
 	chatService := services.ChatService{}
 	chat, err := chatService.FindOneChatByID([]string{"id", "name", "created", "closed", "is_closed"}, id)
 
