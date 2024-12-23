@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	models "alejandroblanco2001/chatroom/models"
+	services "alejandroblanco2001/chatroom/services"
 	"encoding/json"
 	"net/http"
 )
@@ -26,7 +26,8 @@ func SearchSpecificChatHandler(w http.ResponseWriter, r *http.Request) {
 	// I will use the query parameter instead
 	id := r.URL.Query().Get("id")
 
-	chat, err := models.FindOneChatByID([]string{"id", "name", "created", "closed", "is_closed"}, id)
+	chatService := services.ChatService{}
+	chat, err := chatService.FindOneChatByID([]string{"id", "name", "created", "closed", "is_closed"}, id)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

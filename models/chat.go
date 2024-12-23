@@ -2,10 +2,7 @@ package models
 
 import (
 	"errors"
-	"strings"
 	"time"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 // Chat representa una sala de chat en el sistema
@@ -42,44 +39,4 @@ func (c *Chat) Create() error {
 	}
 
 	return nil
-}
-
-func FindOneChatByID(fields []string, chatId string) (Chat, error) {
-	if len(fields) == 0 {
-		fields = []string{"id", "name", "created", "closed", "is_closed"}
-	}
-
-	db := GetConnection()
-
-	parsedFields := strings.Join(fields, ", ")
-
-	query := `SELECT ` + parsedFields + ` FROM chats WHERE id = ?`
-
-	stmt, err := db.Prepare(query)
-
-	if err != nil {
-		return Chat{}, err
-	}
-
-	defer stmt.Close()
-
-	result, err := stmt.Query(chatId)
-
-	if err != nil {
-		return Chat{}, err
-	}
-
-	defer result.Close()
-
-	var chat Chat
-
-	if result.Next() {
-		err = result.Scan(&chat.ID, &chat.Name, &chat.Created, &chat.Closed, &chat.IsClosed)
-
-		if err != nil {
-			return Chat{}, err
-		}
-	}
-
-	return chat, nil
 }
