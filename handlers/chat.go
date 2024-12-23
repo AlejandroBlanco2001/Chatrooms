@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	services "alejandroblanco2001/chatroom/services"
+	models "alejandroblanco2001/chatroom/models"
 	"encoding/json"
 	"net/http"
 )
@@ -27,8 +27,8 @@ func SearchSpecificChatHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
 	// I need to make this with Dependency Injection, but I will do it later
-	chatService := services.ChatService{}
-	chat, err := chatService.FindOneChatByID([]string{"id", "name", "created", "closed", "is_closed"}, id)
+	chat := &models.Chat{}
+	err := chat.FindByID([]string{"id", "name", "created", "closed", "is_closed"}, id)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
